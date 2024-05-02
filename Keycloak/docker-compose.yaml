@@ -1,0 +1,50 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/uam_postgresql/data
+    environment:
+      POSTGRES_DB: ${PG_DB}
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+    networks:
+      - keycloak
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    command: start 
+    environment:
+      # Server Configuration
+      KC_HOSTNAME: domain.name.com # localhost if you are running locally
+      KC_HOSTNAME_STRICT_HTTPS: false # true if you are using HTTPS
+      KC_HEALTH_ENABLED: true
+      KC_HTTP_ENABLED: true
+      # Admin Configuration
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      # DB Configuration
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres/${PG_DB}
+      KC_DB_USERNAME: ${PG_USER}
+      KC_DB_PASSWORD: ${PG_PASSWORD}
+      KC_DB_SCHEMA: public
+      # KC_PROXY: edge # Uncomment this line if you are using a reverse proxy
+    ports:
+      - 8080:8080
+    restart: always
+    depends_on:
+      - postgres
+    networks:
+      - keycloak
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  keycloak:
+    driver: bridge
