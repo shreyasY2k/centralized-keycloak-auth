@@ -53,9 +53,12 @@ npm install
 node index.js
 ```
 
+5. Optionally, if you are using domain name with nginx, you can use the `nginx.conf` file to configure the reverse proxy as shown in Keycloak directory.
+
 ## Usage
 
 Refer to the blog post for detailed instructions on how to setup keycloak and use the application.
+You can also refer to the [Keycloak documentation](https://www.keycloak.org/documentation.html) for more information.
 Once the application is running, you can access the following endpoints:
 
 - `GET /admin`: Get admin endpoint.
